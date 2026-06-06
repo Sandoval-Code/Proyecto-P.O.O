@@ -67,18 +67,18 @@ namespace TurismoSostenible
         static void InicializarDatos()
         {
             // Crear comunidades
-            var comunidad1 = new Comunidad("COM001", "Comunidad Sierra Verde", 
+            var comunidad1 = new Comunidad("COM001", "León - Poneloya", 
                 "Habitantes dedicados a turismo comunitario", 150, 45);
-            var comunidad2 = new Comunidad("COM002", "Pueblo Andino", 
+            var comunidad2 = new Comunidad("COM002", "Centro de la Ciudad Universitaria", 
                 "Preservación de tradiciones culturales", 200, 60);
 
             sistema.RegistrarComunidad(comunidad1);
             sistema.RegistrarComunidad(comunidad2);
 
             // Crear destinos
-            var destino1 = new Destino("D001", "Laguna Azul", 
+            var destino1 = new Destino("D001", "Playas de Poneloya y Las Peñitas", 
                 "Destino natural en zona rural", 100, comunidad1);
-            var destino2 = new Destino("D002", "Centro Cultural Andino", 
+            var destino2 = new Destino("D002", "Centro de Arte Ortíz Gurdián", 
                 "Experiencia cultural auténtica", 80, comunidad2);
 
             sistema.RegistrarDestino(destino1);
@@ -98,57 +98,93 @@ namespace TurismoSostenible
 
         static void GestionarDestinos()
         {
-            Console.WriteLine("\n--- GESTIÓN DE DESTINOS ---");
-            Console.WriteLine("1. Ver destinos");
-            Console.WriteLine("2. Agregar nuevo destino");
-            Console.WriteLine("3. Consultar capacidad");
-            Console.Write("Seleccione: ");
-            string opcion = Console.ReadLine().Trim();
-
-            if (opcion == "1")
+            bool volver = false;
+            while (!volver)
             {
-                var destinos = sistema.ObtenerDestinos();
-                if (destinos.Count > 0)
-                {
-                    foreach (var d in destinos)
-                    {
-                        Console.WriteLine($"\nID: {d.IdDestino}");
-                        Console.WriteLine($"Nombre: {d.Nombre}");
-                        Console.WriteLine($"Descripción: {d.Descripcion}");
-                        Console.WriteLine($"Capacidad diaria: {d.CapacidadDiaria}");
-                        Console.WriteLine($"Comunidad: {d.Comunidad.Nombre}");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("No hay destinos registrados");
-                }
-            }
-            else if (opcion == "2")
-            {
-                Console.Write("ID del destino: ");
-                string idDest = Console.ReadLine();
-                Console.Write("Nombre: ");
-                string nombre = Console.ReadLine();
-                Console.Write("Descripción: ");
-                string desc = Console.ReadLine();
-                Console.Write("Capacidad diaria: ");
-                int cap = int.Parse(Console.ReadLine());
+                Console.WriteLine("\n--- GESTIÓN DE DESTINOS ---");
+                Console.WriteLine("1. Ver destinos");
+                Console.WriteLine("2. Agregar nuevo destino");
+                Console.WriteLine("3. Consultar capacidad");
+                Console.WriteLine("4. Volver");
+                Console.Write("Seleccione: ");
+                string opcion = Console.ReadLine().Trim();
 
-                Console.WriteLine("Comunidades disponibles:");
-                foreach (var c in sistema.ObtenerComunidades())
+                switch (opcion)
                 {
-                    Console.WriteLine($"- {c.IdComunidad}: {c.Nombre}");
-                }
-                Console.Write("ID de comunidad: ");
-                string idCom = Console.ReadLine();
+                    case "1":
+                        {
+                            var destinos = sistema.ObtenerDestinos();
+                            if (destinos.Count > 0)
+                            {
+                                foreach (var d in destinos)
+                                {
+                                    Console.WriteLine($"\nID: {d.IdDestino}");
+                                    Console.WriteLine($"Nombre: {d.Nombre}");
+                                    Console.WriteLine($"Descripción: {d.Descripcion}");
+                                    Console.WriteLine($"Capacidad diaria: {d.CapacidadDiaria}");
+                                    Console.WriteLine($"Comunidad: {d.Comunidad.Nombre}");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("No hay destinos registrados");
+                            }
+                        }
+                        break;
 
-                var comunidad = sistema.ObtenerComunidad(idCom);
-                if (comunidad != null)
-                {
-                    var destino = new Destino(idDest, nombre, desc, cap, comunidad);
-                    sistema.RegistrarDestino(destino);
-                    Console.WriteLine("✓ Destino registrado");
+                    case "2":
+                        {
+                            Console.Write("ID del destino: ");
+                            string idDest = Console.ReadLine();
+                            Console.Write("Nombre: ");
+                            string nombre = Console.ReadLine();
+                            Console.Write("Descripción: ");
+                            string desc = Console.ReadLine();
+                            Console.Write("Capacidad diaria: ");
+                            int cap = int.Parse(Console.ReadLine());
+
+                            Console.WriteLine("Comunidades disponibles:");
+                            foreach (var c in sistema.ObtenerComunidades())
+                            {
+                                Console.WriteLine($"- {c.IdComunidad}: {c.Nombre}");
+                            }
+                            Console.Write("ID de comunidad: ");
+                            string idCom = Console.ReadLine();
+
+                            var comunidad = sistema.ObtenerComunidad(idCom);
+                            if (comunidad != null)
+                            {
+                                var destino = new Destino(idDest, nombre, desc, cap, comunidad);
+                                sistema.RegistrarDestino(destino);
+                                Console.WriteLine("✓ Destino registrado");
+                            }
+                        }
+                        break;
+
+                    case "3":
+                        {
+                            Console.Write("ID del destino a consultar: ");
+                            string id = Console.ReadLine();
+                            var destino = sistema.ObtenerDestino(id);
+                            if (destino != null)
+                            {
+                                Console.WriteLine($"Destino: {destino.Nombre}");
+                                Console.WriteLine($"Capacidad: {destino.CapacidadDiaria}");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Destino no encontrado");
+                            }
+                        }
+                        break;
+
+                    case "4":
+                        volver = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("Opción no válida");
+                        break;
                 }
             }
         }
